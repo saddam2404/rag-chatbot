@@ -1,6 +1,28 @@
+import os
 import streamlit as st
-
-st.set_page_config(page_title="RAG Chatbot", page_icon="🤖")
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 st.title("RAG Chatbot")
-st.write("Project setup successful.")
+
+documents = []
+
+for file in os.listdir("data"):
+    if file.endswith(".pdf"):
+        loader = PyPDFLoader(f"data/{file}")
+        documents.extend(loader.load())
+
+st.write("Total pages loaded:", len(documents))
+
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=500,
+    chunk_overlap=50
+)
+
+chunks = text_splitter.split_documents(documents)
+
+st.write("Total chunks created:", len(chunks))
+
+if chunks:
+    st.subheader("First chunk preview")
+    st.write(chunks[0].page_content)
