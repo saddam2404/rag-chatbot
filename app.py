@@ -33,6 +33,13 @@ vectorstore = FAISS.from_documents(chunks, embeddings)
 
 st.success("FAISS vector store created successfully with HuggingFace embeddings!")
 
-if chunks:
-    st.subheader("First chunk preview")
-    st.write(chunks[0].page_content[:500])
+user_question = st.text_input("Ask a question about your PDFs")
+
+if user_question:
+    results = vectorstore.similarity_search(user_question, k=3)
+
+    st.subheader("Top relevant chunks")
+    for i, doc in enumerate(results, start=1):
+        st.write(f"### Chunk {i}")
+        st.write(doc.page_content)
+        st.write("---")
