@@ -1,12 +1,9 @@
 import os
 import streamlit as st
-from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
-
-load_dotenv()
+from langchain_ollama import OllamaEmbeddings
 
 st.title("RAG Chatbot")
 
@@ -28,11 +25,11 @@ chunks = text_splitter.split_documents(documents)
 
 st.write("Total chunks created:", len(chunks))
 
-embeddings = OpenAIEmbeddings()
+embeddings = OllamaEmbeddings(model="nomic-embed-text")
 
 vectorstore = FAISS.from_documents(chunks, embeddings)
 
-st.success("FAISS vector store created successfully!")
+st.success("FAISS vector store created successfully with Ollama embeddings!")
 
 if chunks:
     st.subheader("First chunk preview")
