@@ -3,7 +3,7 @@ import streamlit as st
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
-from langchain_ollama import OllamaEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
 st.title("RAG Chatbot")
 
@@ -25,11 +25,13 @@ chunks = text_splitter.split_documents(documents)
 
 st.write("Total chunks created:", len(chunks))
 
-embeddings = OllamaEmbeddings(model="nomic-embed-text")
+embeddings = HuggingFaceEmbeddings(
+    model_name="sentence-transformers/all-MiniLM-L6-v2"
+)
 
 vectorstore = FAISS.from_documents(chunks, embeddings)
 
-st.success("FAISS vector store created successfully with Ollama embeddings!")
+st.success("FAISS vector store created successfully with HuggingFace embeddings!")
 
 if chunks:
     st.subheader("First chunk preview")
